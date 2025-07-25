@@ -24,58 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
 })();
 
 (function () {
-  const processPosts = (json) => {
-    const currentPostUrl = window.location.href;
-    const allPosts = json.feed.entry || [];
-
-    const filtered = allPosts
-      .filter(post => post.link.find(l => l.rel === 'alternate').href !== currentPostUrl)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 9);
-
-    const grid = document.getElementById('relatedPostsGrid');
-    if (!grid) return;
-
-    grid.innerHTML = filtered.map(post => {
-      const postUrl = post.link.find(l => l.rel === 'alternate').href;
-      const title = post.title.$t;
-
-      const content = post.content?.$t || '';
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = content;
-      const firstImage = tempDiv.querySelector('img');
-      const imageUrl = firstImage?.src || 'https://dummyimage.com/600x400/000/fff&text=No+Image';
-
-      return `
-        <div class='col-md-4 mb-4'>
-          <div class='card h-100'>
-            <a class='text-decoration-none' href='${postUrl}'>
-              <img alt='${title}' class='card-img-top' loading='lazy' src='${imageUrl}' style='height: 200px; object-fit: cover;'/>
-              <div class='position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center playbtn'>
-                <svg class='responsive-svg-icon' viewBox='0 0 64 64'>
-                  <circle cx='32' cy='32' fill='#FF0000' r='32'/>
-                  <path d='M44 32L26 42V22L44 32Z' fill='white'/>
-                </svg>
-              </div>
-              <div class='bg-dark'>
-                <h4 class='text-white ps-1 m-0 p-2 card-title'>
-                  <span class='text-truncate d-block'>${title}</span>
-                </h4>
-              </div>
-            </a>
-          </div>
-        </div>
-      `;
-    }).join('');
-  };
-
-  // Load Blogger feed JSONP
-  const script = document.createElement('script');
-  script.src = '/feeds/posts/default?alt=json-in-script&callback=processPosts&max-results=50&fields=entry(title,link,content)';
-  document.body.appendChild(script);
-})();
-
-(function () {
   if (window.top !== window.self) {
     try {
       // Try to break out of iframe
